@@ -5,7 +5,7 @@ import nodemailer,{ SendMailOptions,Transporter } from 'nodemailer';
 import Email from "email-templates";
 import path from "node:path"
 import ejs from "ejs"
-import { IEmailLocals, winstonLogger } from "@manoj19-github/microservice_shared";
+import { IEmailLocals, winstonLogger } from "@manoj19-github/microservice_shared_lib";
 export class UtilsMain {
     private static logger: Logger = winstonLogger(`${EnvVariable.ELASTIC_SEARCH_URL}`, 'mailTransport', 'debug');
     public static async sendEmail(templates:string,receiverEmail:string,subject:string,locals:IEmailLocals):Promise<void>{

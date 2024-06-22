@@ -14,7 +14,7 @@ import { checkElasticSearchConnection } from './config/elasticsearch.config';
 import { QueueConnection } from './queues/connection';
 import { Channel } from 'amqplib';
 import { EmailConsumer } from './queues/email.consumer';
-import { winstonLogger } from '@manoj19-github/microservice_shared';
+import { winstonLogger } from '@manoj19-github/microservice_shared_lib';
 config();
 class NotificationServer {
 	private app: Application;
@@ -22,13 +22,11 @@ class NotificationServer {
 	// private routesMain = new RoutesMain();
 	private logger: Logger;
 	constructor() {
-
 		this.logger = winstonLogger(`${EnvVariable.ELASTIC_SEARCH_URL}`, 'notificationServer', 'debug');
 		this.app = express();
 		this.PORT = process.env.PORT ?? 5000;
 		this.middleware();
 		this.routes();
-
 	}
 	private middleware(): void {
 		this.app.use(cors({ credentials: true, origin: '*', methods: 'GET,POST,PUT,DELETE' }));
@@ -53,32 +51,27 @@ class NotificationServer {
 		this.startElasticSearch();
 	}
 	private async startQueue(): Promise<void> {
-		const emailChannel:Channel = await QueueConnection.createConnection() as Channel;
+		const emailChannel: Channel = (await QueueConnection.createConnection()) as Channel;
 		await EmailConsumer.consumeAuthEmailMessages(emailChannel);
 		await EmailConsumer.consumeOrderEmailMessages(emailChannel);
-		await emailChannel.assertExchange(String(EnvVariable.EMAIL_QUEUE_EXCHANGE_NAME),'direct');
+		await emailChannel.assertExchange(String(EnvVariable.EMAIL_QUEUE_EXCHANGE_NAME), 'direct');
 		const routingKey = 'auth-email-notification';
-        const queueName = 'auth-email-queue';
-		const messages1 = JSON.stringify({name:"Auth Email",service:"Auth Notification service"})
-		emailChannel.publish(String(EnvVariable.EMAIL_QUEUE_EXCHANGE_NAME),routingKey,Buffer.from(messages1));
-		
-		
+		const queueName = 'auth-email-queue';
+		const messages1 = JSON.stringify({ name: 'Auth Email', service: 'Auth Notification service' });
+		emailChannel.publish(String(EnvVariable.EMAIL_QUEUE_EXCHANGE_NAME), routingKey, Buffer.from(messages1));
+
 		// const messages2:any = {
 		// 	verifyLink:`${EnvVariable.CLIENT_URL}/confirm_email?v_token=4343edferfde4343`,
 		// 	receiverEmail:`${EnvVariable.SENDER_EMAIL}`,
 		// 	template:'verifyEmail/html.ejs',
 		// 	subject:"test email"
 
-
-
 		// }
 		// await emailChannel.assertExchange('jobber-order-notification','direct');
 		// emailChannel.publish('jobber-order-notification','order-email',Buffer.from(JSON.stringify(messages2)));
-		
-
 	}
 	private async startElasticSearch(): Promise<void> {
-		await checkElasticSearchConnection()
+		await checkElasticSearchConnection();
 	}
 	private startServer(): void {
 		try {

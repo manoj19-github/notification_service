@@ -2,7 +2,7 @@
 import client, { Channel, Connection } from 'amqplib';
 import { EnvVariable } from '../config/envVariable';
 import { Logger } from 'winston';
-import { winstonLogger } from '@manoj19-github/microservice_shared';
+import { winstonLogger } from '@manoj19-github/microservice_shared_lib';
 
 export class QueueConnection {
 	private static logger: Logger = winstonLogger(`${EnvVariable.ELASTIC_SEARCH_URL}`, 'notificationQueueConnection', 'debug');

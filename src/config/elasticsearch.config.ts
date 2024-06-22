@@ -2,7 +2,7 @@ import {Client} from "@elastic/elasticsearch"
 import { EnvVariable } from "./envVariable"
 import { Logger } from "winston";
 import { ClusterHealthResponse } from "@elastic/elasticsearch/lib/api/types";
-import { winstonLogger } from "@manoj19-github/microservice_shared";
+import { winstonLogger } from '@manoj19-github/microservice_shared_lib';
 
 
 const logger:Logger = winstonLogger(`${EnvVariable.ELASTIC_SEARCH_URL}`, 'notificationElasticSearchServer', 'debug');
